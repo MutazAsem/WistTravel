@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->json('image')->nullable();
+            $table->json('images')->nullable();
             $table->text('services');
             $table->text('advantages');
             $table->integer('stars');

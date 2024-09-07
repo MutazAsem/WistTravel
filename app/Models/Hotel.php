@@ -12,8 +12,12 @@ class Hotel extends Model
     use HasFactory,SoftDeletes;
 
     protected $fillable = [
-        'name','description','image','services','advantages','stars',
+        'name','description','images','services','advantages','stars',
         'city_id','address_link','address_description'
+    ];
+
+    protected $casts = [
+        'images' => 'array',
     ];
 
     public function city ():BelongsTo
