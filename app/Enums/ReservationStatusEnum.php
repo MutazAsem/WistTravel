@@ -6,15 +6,17 @@ use Filament\Support\Contracts\HasLabel;
 
 enum ReservationStatusEnum: string implements HasLabel
 {
-    case Booked = 'Booked';
-    case live = 'live';
+    case Awaiting_Confirmation = 'Awaiting Confirmation';
+    case Confirmed = 'Confirmed';
+    case Completed = 'Completed';
     case Canceled = 'Canceled';
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::Booked => 'Booked',
-            self::live => 'live',
+            self::Awaiting_Confirmation => 'Awaiting Confirmation',
+            self::Confirmed => 'Confirmed',
+            self::Completed => 'Completed',
             self::Canceled => 'Canceled',
             
         };

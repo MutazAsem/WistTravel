@@ -17,7 +17,7 @@ class HotelResource extends Resource
 {
     protected static ?string $model = Hotel::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
 
     public static function getNavigationBadge(): ?string
     {
@@ -39,30 +39,34 @@ class HotelResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make()
+                        Forms\Components\Section::make('Add New Hotel')
                             ->schema([
-
                                 Forms\Components\TextInput::make('name')
                                     ->required()
                                     ->markAsRequired(false)
                                     ->maxLength(255),
                                 Forms\Components\Textarea::make('description')
-                                    ->maxLength(65535),
+                                    ->maxLength(65535)
+                                    ->autosize(),
                                 Forms\Components\Textarea::make('services')
                                     ->required()
                                     ->markAsRequired(false)
-                                    ->maxLength(65535),
+                                    ->maxLength(65535)
+                                    ->autosize(),
                                 Forms\Components\Textarea::make('advantages')
                                     ->required()
                                     ->markAsRequired(false)
-                                    ->maxLength(65535),
+                                    ->maxLength(65535)
+                                    ->autosize(),
                                 Forms\Components\TextInput::make('stars')
                                     ->required()
                                     ->markAsRequired(false)
                                     ->numeric()
                                     ->minValue(1)
                                     ->maxValue(7)
-                                    ->default(1),
+                                    // ->default(1)
+                                    ->live(onBlur:true)
+                                    ->helperText('Enter a Number between 1 and 7.'),
                                 Forms\Components\Select::make('city_id')
                                     ->relationship('city', 'name')
                                     ->searchable()
@@ -96,26 +100,27 @@ class HotelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('city.name')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('city.name')
+                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('stars')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('address_link')
-                    ->searchable(),
-                    Tables\Columns\ImageColumn::make('images')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('images')
                     ->circular()
                     ->stacked()
                     ->limit(2)
                     ->limitedRemainingText(isSeparate: true),
-
             ])
             ->filters([
-                //
+                  Tables\Filters\SelectFilter::make('City')
+                    ->relationship('city', 'name'),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

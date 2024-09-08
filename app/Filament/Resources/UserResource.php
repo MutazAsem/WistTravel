@@ -34,7 +34,7 @@ class UserResource extends Resource
         ->schema([
             Forms\Components\Group::make()
                 ->schema([
-                    Forms\Components\Section::make()
+                    Forms\Components\Section::make('Add New User')
                         ->schema([
                             Forms\Components\TextInput::make('name')
                                 ->label('First Name')

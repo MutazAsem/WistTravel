@@ -20,13 +20,27 @@ class CityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'country'];
+    }
+
+    protected static int $globalSearchResultsLimit = 5;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make()
+                        Forms\Components\Section::make('Add New City')
                             ->schema([
                                 Forms\Components\TextInput::make('name')
                                     ->required()
