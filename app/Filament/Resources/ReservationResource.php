@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ReservationStatusEnum;
 use App\Filament\Resources\ReservationResource\Pages;
 use App\Filament\Resources\ReservationResource\RelationManagers;
 use App\Models\Reservation;
@@ -10,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -44,11 +46,16 @@ class ReservationResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('client_id')
                                     ->relationship('client', 'name')
+                                    ->native(false)
+                                    ->searchable()
+                                    ->preload()
                                     ->required()
                                     ->markAsRequired(false),
                                 Forms\Components\Select::make('hotel_id')
                                     ->relationship('hotel', 'name')
                                     ->label('Hotel Name')
+                                    ->searchable()
+                                    ->preload()
                                     ->required()
                                     ->markAsRequired(false)
                                     ->native(false),
@@ -116,10 +123,24 @@ class ReservationResource extends Resource
                                     ->numeric()
                                     ->minValue(1)
                                     ->readOnly(),
-                                Forms\Components\TextInput::make('status')
+                                Forms\Components\ToggleButtons::make('status')
                                     ->required()
                                     ->markAsRequired(false)
-                                    ->maxLength(255),
+                                    ->options(ReservationStatusEnum::class)
+                                    ->icons([
+                                        'Awaiting Confirmation' => 'heroicon-o-clock',
+                                        'Confirmed' => 'heroicon-o-check-badge',
+                                        'Completed' => 'heroicon-o-check-circle',
+                                        'Canceled' => 'heroicon-o-x-circle',
+                                    ])
+                                    ->colors([
+                                        'Awaiting Confirmation' => 'info',
+                                        'Confirmed' => 'warning',
+                                        'Completed' => 'success',
+                                        'Canceled' => 'danger',
+                                    ])
+                                    ->inline()
+                                    ->default('Awaiting Confirmation'),
                             ])->columns(2)
                     ])->columnSpanFull()
             ]);
@@ -131,13 +152,16 @@ class ReservationResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('hotel.name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('price')
                     ->money()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('start_time'),
                 Tables\Columns\TextColumn::make('end_time'),
                 Tables\Columns\TextColumn::make('start_date')
@@ -148,28 +172,40 @@ class ReservationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('days')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('people_number')
+                ->label('people Num')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                Tables\Filters\SelectFilter::make('Client')
+                    ->relationship('client', 'name'),
+                Tables\Filters\SelectFilter::make('Hotel')
+                    ->relationship('hotel', 'name'),
+                Tables\Filters\Filter::make('created_at')
+                    ->form([
+                        Forms\Components\DatePicker::make('start_date')->label('Start Date')->native(false)->live()->reactive(),
+                        Forms\Components\DatePicker::make('end_date')->label('End Date')->native(false)->live()->reactive(),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query
+                            ->when($data['start_date'], fn($query, $date) => $query->whereDate('start_date', '>=', $date))
+                            ->when($data['end_date'], fn($query, $date) => $query->whereDate('end_date', '<=', $date));
+                    }),
+            ])->filtersTriggerAction(
+                fn(Action $action) => $action
+                    ->button()
+                    ->label('Filter'),
+            )
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
