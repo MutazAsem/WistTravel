@@ -75,7 +75,7 @@ class CityResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('Country Name')
-                    ->options(CountryEnum::class),
+                    ->options(CountryEnum::class)->native(false),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

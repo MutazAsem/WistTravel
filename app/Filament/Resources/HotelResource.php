@@ -120,7 +120,7 @@ class HotelResource extends Resource
             ])
             ->filters([
                   Tables\Filters\SelectFilter::make('City')
-                    ->relationship('city', 'name'),
+                    ->relationship('city', 'name')->native(false),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

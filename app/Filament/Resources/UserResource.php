@@ -31,110 +31,110 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Forms\Components\Group::make()
-                ->schema([
-                    Forms\Components\Section::make('Add New User')
-                        ->schema([
-                            Forms\Components\TextInput::make('name')
-                                ->label('First Name')
-                                ->required()
-                                ->markAsRequired(false),
-                            Forms\Components\TextInput::make('last_name')
-                                ->label('Last Name')
-                                ->required()
-                                ->markAsRequired(false),
-                            Forms\Components\TextInput::make('email')
-                                ->label('Email')
-                                ->email()
-                                ->autocomplete(false)
-                                ->unique(User::class, 'email', ignoreRecord: true)
-                                ->required()
-                                ->markAsRequired(false),
-                            Forms\Components\TextInput::make('password')
-                                ->password()
-                                ->dehydrateStateUsing(fn ($state) => bcrypt($state))
-                                ->revealable()
-                                ->autocomplete(false)
-                                ->required()
-                                ->markAsRequired(false)
-                                ->confirmed()
-                                ->visibleOn('create'),
-                            Forms\Components\Select::make('gender')
-                                ->required()
-                                ->markAsRequired(false)
-                                ->native(false)
-                                ->options(['Male' => 'Male', 'Female' => 'Female']),
-                            Forms\Components\TextInput::make('password_confirmation')
-                                ->password()
-                                ->required()
-                                ->markAsRequired(false)
-                                ->revealable()
-                                ->autocomplete(false)
-                                ->same('password')
-                                ->label('Confirm Password')
-                                ->visibleOn('create'),
-                            Forms\Components\TextInput::make('mobile')
-                                ->required()
-                                ->markAsRequired(false)
-                                ->maxLength(9)
-                                ->minLength(9)
-                                ->step(9)
-                                ->tel()
-                                ->prefix('+967'),
-                            // Forms\Components\Select::make('roles')
-                            //     ->relationship('roles', 'name')
-                            //     ->multiple()
-                            //     ->native(false)
-                            //     ->preload()
-                            //     ->required()
-                            //     ->markAsRequired(false)
-                            //     ->searchable(),
-                            Forms\Components\Toggle::make('status')
-                                ->default(true),
-                        ])->columns(2)
-                ])->columnSpanFull()
-        ]);
+            ->schema([
+                Forms\Components\Group::make()
+                    ->schema([
+                        Forms\Components\Section::make('Add New User')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label('First Name')
+                                    ->required()
+                                    ->markAsRequired(false),
+                                Forms\Components\TextInput::make('last_name')
+                                    ->label('Last Name')
+                                    ->required()
+                                    ->markAsRequired(false),
+                                Forms\Components\TextInput::make('email')
+                                    ->label('Email')
+                                    ->email()
+                                    ->autocomplete(false)
+                                    ->unique(User::class, 'email', ignoreRecord: true)
+                                    ->required()
+                                    ->markAsRequired(false),
+                                Forms\Components\TextInput::make('password')
+                                    ->password()
+                                    ->dehydrateStateUsing(fn($state) => bcrypt($state))
+                                    ->revealable()
+                                    ->autocomplete(false)
+                                    ->required()
+                                    ->markAsRequired(false)
+                                    ->confirmed()
+                                    ->visibleOn('create'),
+                                Forms\Components\Select::make('gender')
+                                    ->required()
+                                    ->markAsRequired(false)
+                                    ->native(false)
+                                    ->options(['Male' => 'Male', 'Female' => 'Female']),
+                                Forms\Components\TextInput::make('password_confirmation')
+                                    ->password()
+                                    ->required()
+                                    ->markAsRequired(false)
+                                    ->revealable()
+                                    ->autocomplete(false)
+                                    ->same('password')
+                                    ->label('Confirm Password')
+                                    ->visibleOn('create'),
+                                Forms\Components\TextInput::make('mobile')
+                                    ->required()
+                                    ->markAsRequired(false)
+                                    ->maxLength(9)
+                                    ->minLength(9)
+                                    ->step(9)
+                                    ->tel()
+                                    ->prefix('+967'),
+                                Forms\Components\Select::make('roles')
+                                    ->relationship('roles', 'name')
+                                    ->multiple()
+                                    ->native(false)
+                                    ->preload()
+                                    ->required()
+                                    ->markAsRequired(false)
+                                    ->searchable(),
+                                Forms\Components\Toggle::make('status')
+                                    ->default(true),
+                            ])->columns(2)
+                    ])->columnSpanFull()
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
-            Tables\Columns\TextColumn::make('name')
-                ->searchable()
-                ->sortable(),
-            Tables\Columns\TextColumn::make('last_name')
-                ->searchable()
-                ->sortable(),
-            Tables\Columns\TextColumn::make('email')
-                ->searchable()
-                ->sortable(),
-            Tables\Columns\TextColumn::make('mobile')
-                ->searchable()
-                ->sortable(),
-            // Tables\Columns\TextColumn::make('roles.name')
-            //     ->label('Role')
-            //     ->searchable()
-            //     ->sortable(),
-            Tables\Columns\TextColumn::make('gender')
-                ->searchable()
-                ->sortable(),
-            Tables\Columns\IconColumn::make('status')->boolean()
-                ->sortable(),
-            Tables\Columns\TextColumn::make('email_verified_at')
-                ->dateTime()
-                ->toggleable(isToggledHiddenByDefault: true)
-                ->searchable()
-                ->sortable(),
-            Tables\Columns\ImageColumn::make('profile_photo_path')
-                ->label('Uesr Profile')
-                ->searchable()
-                ->sortable(),
-        ])
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('last_name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('mobile')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Role')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('gender')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('status')->boolean()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('email_verified_at')
+                    ->dateTime()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\ImageColumn::make('profile_photo_path')
+                    ->label('Uesr Profile')
+                    ->searchable()
+                    ->sortable(),
+            ])
             ->filters([
-                // Tables\Filters\SelectFilter::make('Role Name')
-                //     ->relationship('roles', 'name'),
+                Tables\Filters\SelectFilter::make('Role Name')
+                    ->relationship('roles', 'name')->native(false),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

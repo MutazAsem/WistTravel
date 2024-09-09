@@ -175,12 +175,16 @@ class ReservationResource extends Resource
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('people_number')
-                ->label('people Num')
+                    ->label('people Number')
                     ->numeric()
                     ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\SelectColumn::make('status')
+                    ->searchable()
+                    ->sortable()
+                    ->options(ReservationStatusEnum::class)
+                    ->selectablePlaceholder(false),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -188,9 +192,9 @@ class ReservationResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('Client')
-                    ->relationship('client', 'name'),
+                    ->relationship('client', 'name')->native(false),
                 Tables\Filters\SelectFilter::make('Hotel')
-                    ->relationship('hotel', 'name'),
+                    ->relationship('hotel', 'name')->native(false),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('start_date')->label('Start Date')->native(false)->live()->reactive(),

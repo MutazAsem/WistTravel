@@ -153,7 +153,8 @@ class OfferResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('people_number')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('available')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('deleted_at')
@@ -171,7 +172,7 @@ class OfferResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('Hotel')
-                    ->relationship('hotel', 'name'),
+                    ->relationship('hotel', 'name')->native(false),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('start_date')->label('Start Date')->native(false)->live()->reactive(),
