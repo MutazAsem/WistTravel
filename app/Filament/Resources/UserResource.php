@@ -130,7 +130,8 @@ class UserResource extends Resource
                 Tables\Columns\ImageColumn::make('profile_photo_path')
                     ->label('Uesr Profile')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->circular(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('Role Name')
